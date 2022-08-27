@@ -1,19 +1,15 @@
 package ru.wtrn.yeelightmqtt.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 public class YeelightSocketWrapper implements Closeable {
     private final InetAddress targetAddress;
