@@ -1,8 +1,9 @@
-package ru.wtrn.yeelightmqtt.client;
+package ru.wtrn.yeelightmqtt.client.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import ru.wtrn.yeelightmqtt.client.YeelightCommand;
 
 import java.io.OutputStream;
 import java.net.InetAddress;

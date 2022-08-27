@@ -1,5 +1,6 @@
 package ru.wtrn.yeelightmqtt.client;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @ToString
+@AllArgsConstructor
 public class YeelightCommand {
     private final String method;
     @Builder.Default
