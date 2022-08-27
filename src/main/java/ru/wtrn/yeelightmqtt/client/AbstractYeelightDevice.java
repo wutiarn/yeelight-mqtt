@@ -11,19 +11,20 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-public class YeelightSocketWrapper implements Closeable {
+public class AbstractYeelightDevice {
     private final InetAddress targetAddress;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AtomicInteger requestIdCounter = new AtomicInteger();
     private volatile Socket socket = null;
 
-    public YeelightSocketWrapper(InetAddress targetAddress) {
+    public AbstractYeelightDevice(InetAddress targetAddress) {
         this.targetAddress = targetAddress;
     }
 
     @SneakyThrows
-    public YeelightResponse sendCommand(YeelightCommand command) {
+    protected int sendCommand(YeelightCommand command) {
         YeelightCommandWithId request = new YeelightCommandWithId(command, requestIdCounter.incrementAndGet());
         String requestString = objectMapper.writeValueAsString(request);
         byte[] bytes = (requestString + "\r\n").getBytes();
@@ -31,27 +32,17 @@ public class YeelightSocketWrapper implements Closeable {
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(bytes);
             outputStream.flush();
-            Scanner scanner = new Scanner(socket.getInputStream());
-            String responseStr = scanner.nextLine();
-            return objectMapper.readValue(responseStr, YeelightResponse.class);
         });
-        return null;
+        return request.id;
     }
 
-    private synchronized YeelightResponse withSocket(SocketAction action) throws Exception {
+    private synchronized void withSocket(SocketAction action) throws Exception {
         if (socket == null || socket.isClosed()) {
             socket = new Socket(targetAddress, 55443);
             socket.setKeepAlive(true);
             socket.setSoTimeout(60_000);
         }
-        return action.apply(socket);
-    }
-
-    @Override
-    public void close() throws IOException {
-        if (socket != null) {
-            socket.close();
-        }
+        action.apply(socket);
     }
 
     @Getter
@@ -66,6 +57,6 @@ public class YeelightSocketWrapper implements Closeable {
 
     @FunctionalInterface
     private interface SocketAction {
-        YeelightResponse apply(Socket socket) throws Exception;
+        void apply(Socket socket) throws Exception;
     }
 }

@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
-class YeelightSocketWrapperTest {
+class AbstractYeelightDeviceTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(YeelightSocketWrapperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractYeelightDeviceTest.class);
 
     @Test
     void sendCommand() throws Exception{
@@ -16,10 +16,7 @@ class YeelightSocketWrapperTest {
         YeelightCommand command = YeelightCommand.builder()
                 .method("toggle")
                 .build();
-        YeelightSocketWrapper socket = new YeelightSocketWrapper(address);
-        try (socket) {
-            YeelightResponse response = socket.sendCommand(command);
-            logger.info("Response: {}", response);
-        }
+        AbstractYeelightDevice socket = new AbstractYeelightDevice(address);
+        socket.sendCommand(command);
     }
 }
