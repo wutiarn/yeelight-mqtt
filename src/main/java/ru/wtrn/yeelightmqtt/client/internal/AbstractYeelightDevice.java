@@ -1,5 +1,6 @@
 package ru.wtrn.yeelightmqtt.client.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -27,14 +28,14 @@ public abstract class AbstractYeelightDevice {
     }
 
     @SneakyThrows
-    protected synchronized int sendCommand(YeelightCommand command) {
+    protected synchronized JsonNode sendCommand(YeelightCommand command) {
         YeelightCommandWithId request = new YeelightCommandWithId(command, requestIdCounter.incrementAndGet());
         String requestString = objectMapper.writeValueAsString(request);
         byte[] bytes = (requestString + "\r\n").getBytes();
         OutputStream outputStream = getOrCreateSocket().getOutputStream();
         outputStream.write(bytes);
         outputStream.flush();
-        return request.id;
+        return deviceEventsCollector.getEventWithId(request.getId());
     }
 
     private synchronized Socket getOrCreateSocket() throws Exception {

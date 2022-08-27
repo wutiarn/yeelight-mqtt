@@ -30,9 +30,10 @@ public class DeviceEventsCollector {
             logger.error("Failed to read event to JsonNode: {}", event);
             return;
         }
-        JsonNode eventId = eventNode.get("id");
-        if (eventId != null && eventId.isNumber()) {
-            recentEvents.put(eventId.intValue(), eventNode);
+        JsonNode eventIdNode = eventNode.get("id");
+        if (eventIdNode != null && eventIdNode.isNumber()) {
+            int eventId = eventIdNode.intValue();
+            recentEvents.put(eventId, eventNode);
             CompletableFuture<JsonNode> awaitingFuture = eventAwaitingFutures.get(eventId);
             if (awaitingFuture != null) {
                 awaitingFuture.complete(eventNode);

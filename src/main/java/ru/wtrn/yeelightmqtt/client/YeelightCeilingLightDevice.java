@@ -1,5 +1,6 @@
 package ru.wtrn.yeelightmqtt.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import ru.wtrn.yeelightmqtt.client.internal.AbstractYeelightDevice;
 
 import java.net.InetAddress;
@@ -9,10 +10,10 @@ public class YeelightCeilingLightDevice extends AbstractYeelightDevice {
         super(targetAddress, deviceName);
     }
 
-    public void toggle() {
+    public JsonNode toggle() {
         YeelightCommand command = YeelightCommand.builder()
                 .method("toggle")
                 .build();
-        sendCommand(command);
+        return sendCommand(command);
     }
 }
