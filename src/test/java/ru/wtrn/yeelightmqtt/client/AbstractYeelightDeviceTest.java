@@ -13,7 +13,7 @@ class YeelightCeilingLightDeviceTest {
     @Test
     void sendCommand() throws Exception{
         InetAddress address = InetAddress.getByName("100.64.0.70");
-        YeelightCeilingLightDevice device = new YeelightCeilingLightDevice(address);
+        YeelightCeilingLightDevice device = new YeelightCeilingLightDevice(address, "test-lamp");
         device.toggle();
     }
 }

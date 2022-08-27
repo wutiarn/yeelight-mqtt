@@ -5,8 +5,8 @@ import ru.wtrn.yeelightmqtt.client.internal.AbstractYeelightDevice;
 import java.net.InetAddress;
 
 public class YeelightCeilingLightDevice extends AbstractYeelightDevice {
-    public YeelightCeilingLightDevice(InetAddress targetAddress) {
-        super(targetAddress);
+    public YeelightCeilingLightDevice(InetAddress targetAddress, String deviceName) {
+        super(targetAddress, deviceName);
     }
 
     public void toggle() {
