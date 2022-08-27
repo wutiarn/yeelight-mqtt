@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
-class AbstractYeelightDeviceTest {
+class YeelightCeilingLightDeviceTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractYeelightDeviceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(YeelightCeilingLightDeviceTest.class);
 
     @Test
     void sendCommand() throws Exception{
@@ -16,7 +16,7 @@ class AbstractYeelightDeviceTest {
         YeelightCommand command = YeelightCommand.builder()
                 .method("toggle")
                 .build();
-        AbstractYeelightDevice socket = new AbstractYeelightDevice(address);
-        socket.sendCommand(command);
+        YeelightCeilingLightDevice device = new YeelightCeilingLightDevice(address);
+        device.sendCommand(command);
     }
 }

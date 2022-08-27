@@ -4,16 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
-public class AbstractYeelightDevice {
+public abstract class AbstractYeelightDevice {
     private final InetAddress targetAddress;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AtomicInteger requestIdCounter = new AtomicInteger();
