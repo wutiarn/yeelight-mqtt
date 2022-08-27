@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -24,9 +25,12 @@ public class YeelightSocketWrapper implements Closeable {
     @SneakyThrows
     public YeelightResponse sendCommand(YeelightCommand command) {
         YeelightCommandWithId request = new YeelightCommandWithId(command, requestIdCounter.incrementAndGet());
-        byte[] bytes = objectMapper.writeValueAsBytes(request);
+        String requestString = objectMapper.writeValueAsString(request);
+        byte[] bytes = (requestString + "\r\n").getBytes();
         withSocket((socket) -> {
-            socket.getOutputStream().write(bytes);
+            OutputStream outputStream = socket.getOutputStream();
+            outputStream.write(bytes);
+            outputStream.flush();
             Scanner scanner = new Scanner(socket.getInputStream());
             String responseStr = scanner.nextLine();
             return objectMapper.readValue(responseStr, YeelightResponse.class);
