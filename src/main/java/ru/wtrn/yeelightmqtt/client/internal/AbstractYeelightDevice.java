@@ -16,6 +16,8 @@ public abstract class AbstractYeelightDevice {
     private final String deviceName;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AtomicInteger requestIdCounter = new AtomicInteger();
+
+    private final DeviceEventsCollector deviceEventsCollector = new DeviceEventsCollector();
     private volatile Socket socket = null;
 
     public AbstractYeelightDevice(InetAddress targetAddress, String deviceName) {
@@ -58,7 +60,7 @@ public abstract class AbstractYeelightDevice {
 
             @Override
             public void onNextEvent(String event) {
-                // Not implemented yet
+                deviceEventsCollector.onNewEvent(event);
             }
         }).start();
     }
