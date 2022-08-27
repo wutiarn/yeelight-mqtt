@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import ru.wtrn.yeelightmqtt.client.YeelightCommand;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -12,34 +13,54 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractYeelightDevice {
     private final InetAddress targetAddress;
+    private final String deviceName;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AtomicInteger requestIdCounter = new AtomicInteger();
     private volatile Socket socket = null;
 
-    public AbstractYeelightDevice(InetAddress targetAddress) {
+    public AbstractYeelightDevice(InetAddress targetAddress, String deviceName) {
         this.targetAddress = targetAddress;
+        this.deviceName = deviceName;
+        startEventsListener();
     }
 
     @SneakyThrows
-    protected int sendCommand(YeelightCommand command) {
+    protected synchronized int sendCommand(YeelightCommand command) {
         YeelightCommandWithId request = new YeelightCommandWithId(command, requestIdCounter.incrementAndGet());
         String requestString = objectMapper.writeValueAsString(request);
         byte[] bytes = (requestString + "\r\n").getBytes();
-        withSocket((socket) -> {
-            OutputStream outputStream = socket.getOutputStream();
-            outputStream.write(bytes);
-            outputStream.flush();
-        });
+        OutputStream outputStream = getOrCreateSocket().getOutputStream();
+        outputStream.write(bytes);
+        outputStream.flush();
         return request.id;
     }
 
-    private synchronized void withSocket(SocketAction action) throws Exception {
+    private synchronized Socket getOrCreateSocket() throws Exception {
         if (socket == null || socket.isClosed()) {
             socket = new Socket(targetAddress, 55443);
             socket.setKeepAlive(true);
             socket.setSoTimeout(60_000);
         }
-        action.apply(socket);
+        return socket;
+    }
+
+    private void startEventsListener() {
+        new SocketEventsListener(new SocketEventsListener.DeviceFacade() {
+            @Override
+            public String getName() {
+                return deviceName;
+            }
+
+            @Override
+            public InputStream tryGetInputStream() throws Exception {
+                return getOrCreateSocket().getInputStream();
+            }
+
+            @Override
+            public void onNextEvent(String event) {
+                // Not implemented yet
+            }
+        }).start();
     }
 
     @Getter

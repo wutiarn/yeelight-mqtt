@@ -54,7 +54,7 @@ class SocketEventsListener {
     }
 
     interface DeviceFacade {
-        InputStream getName();
+        String getName();
         InputStream tryGetInputStream() throws Exception;
         void onNextEvent(String event);
     }
