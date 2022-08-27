@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.wtrn.yeelightmqtt.client.YeelightCommand;
 
 import java.io.InputStream;
@@ -20,6 +22,7 @@ public abstract class AbstractYeelightDevice {
 
     private final DeviceEventsCollector deviceEventsCollector = new DeviceEventsCollector();
     private volatile Socket socket = null;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractYeelightDevice.class);
 
     public AbstractYeelightDevice(InetAddress targetAddress, String deviceName) {
         this.targetAddress = targetAddress;
@@ -27,10 +30,15 @@ public abstract class AbstractYeelightDevice {
         startEventsListener();
     }
 
+    public String getDeviceName() {
+        return deviceName;
+    }
+
     @SneakyThrows
     protected synchronized JsonNode sendCommand(YeelightCommand command) {
         YeelightCommandWithId request = new YeelightCommandWithId(command, requestIdCounter.incrementAndGet());
         String requestString = objectMapper.writeValueAsString(request);
+        logger.info("Sending command to device {}: {}", getDeviceName(), requestString);
         byte[] bytes = (requestString + "\r\n").getBytes();
         OutputStream outputStream = getOrCreateSocket().getOutputStream();
         outputStream.write(bytes);
