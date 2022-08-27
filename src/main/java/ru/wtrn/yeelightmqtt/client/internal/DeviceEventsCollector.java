@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 public class DeviceEventsCollector {
@@ -17,10 +18,11 @@ public class DeviceEventsCollector {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(DeviceEventsCollector.class);
 
-    private final Cache<Integer, JsonNode> eventsCache = CacheBuilder.newBuilder()
+    private final ConcurrentMap<Object, Object> eventsCache = CacheBuilder.newBuilder()
             .maximumSize(100)
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build();
+            .build()
+            .asMap();
 
     public DeviceEventsCollector() {
 
