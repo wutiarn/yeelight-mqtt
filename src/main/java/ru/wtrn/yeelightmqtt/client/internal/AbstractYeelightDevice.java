@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.wtrn.yeelightmqtt.client.YeelightCommand;
+import ru.wtrn.yeelightmqtt.client.dto.YeelightCommand;
 
 import java.io.InputStream;
 import java.io.OutputStream;

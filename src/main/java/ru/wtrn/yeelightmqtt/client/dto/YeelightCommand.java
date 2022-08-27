@@ -1,4 +1,4 @@
-package ru.wtrn.yeelightmqtt.client;
+package ru.wtrn.yeelightmqtt.client.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
