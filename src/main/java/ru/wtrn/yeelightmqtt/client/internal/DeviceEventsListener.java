@@ -9,19 +9,21 @@ import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-class SocketEventsListener {
+class DeviceEventsListener {
     private final DeviceFacade deviceFacade;
     private final CountDownLatch shutdownLatch = new CountDownLatch(1);
     private boolean connected = false;
 
-    private static final Logger logger = LoggerFactory.getLogger(SocketEventsListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceEventsListener.class);
 
-    SocketEventsListener(DeviceFacade deviceFacade) {
+    DeviceEventsListener(DeviceFacade deviceFacade) {
         this.deviceFacade = deviceFacade;
     }
 
     public void start() {
         Thread thread = new Thread(this::run, deviceFacade.getName() + "-listener");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void loop() throws Exception {

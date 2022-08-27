@@ -45,7 +45,7 @@ public abstract class AbstractYeelightDevice {
     }
 
     private void startEventsListener() {
-        new SocketEventsListener(new SocketEventsListener.DeviceFacade() {
+        new DeviceEventsListener(new DeviceEventsListener.DeviceFacade() {
             @Override
             public String getName() {
                 return deviceName;

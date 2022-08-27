@@ -15,5 +15,6 @@ class YeelightCeilingLightDeviceTest {
         InetAddress address = InetAddress.getByName("100.64.0.70");
         YeelightCeilingLightDevice device = new YeelightCeilingLightDevice(address, "test-lamp");
         device.toggle();
+        Thread.sleep(30_000);
     }
 }
